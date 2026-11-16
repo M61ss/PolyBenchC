@@ -2,7 +2,7 @@ CC 			:= gcc
 FILENAME 	?= correlation
 INCLUDES 	:= ../../utilities
 SRC 		:= $(INCLUDES)/polybench.c $(FILENAME).c 
-CFLAGS    	:= -O3
+CFLAGS    	:= -O3 -Wall
 LDLIBS    	:= -lm
 EXT_CFLAGS 	?=
 
