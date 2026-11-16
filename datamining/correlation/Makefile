@@ -1,11 +1,19 @@
+CC 			:= gcc
+FILENAME 	?= correlation
+INCLUDES 	:= ../../utilities
+SRC 		:= $(INCLUDES)/polybench.c $(FILENAME).c 
+CFLAGS    	:= -O3
+LDLIBS    	:= -lm
+EXT_CFLAGS 	?=
+
 all:
-	gcc -I ../../utilities/ ../../utilities/polybench.c ./correlation.c -lm -o correlation.o
+	$(CC) $(CFLAGS) $(EXT_CFLAGS) -I $(INCLUDES) $(SRC) -o $(FILENAME).o $(LDLIBS)
 
 clean:
-	rm *.o
+	rm $(FILENAME).o
 
 run:
-	./correlation.o
+	./$(FILENAME).o
 
 profile:
-	perf stat ./correlation.o
+	perf stat ./$(FILENAME).o
