@@ -21,8 +21,8 @@
 #include "correlation.h"
 
 /* Array initialization. */
-static void init_array(int m,
-                       int n,
+static void init_array(const int m,
+                       const int n,
                        DATA_TYPE *float_n,
                        DATA_TYPE POLYBENCH_2D(data, N, M, n, m))
 {
@@ -37,7 +37,7 @@ static void init_array(int m,
 
 /* DCE code. Must scan the entire live-out data.
    Can be used also to check the correctness of the output. */
-static void print_array(int m,
+static void print_array(const int m,
                         DATA_TYPE POLYBENCH_2D(corr, M, M, m, m))
 
 {
@@ -58,8 +58,8 @@ static void print_array(int m,
 
 /* Main computational kernel. The whole function will be timed,
    including the call and return. */
-static void kernel_correlation(int m, int n,
-                               DATA_TYPE float_n,
+static void kernel_correlation(const int m, const int n,
+                               const DATA_TYPE float_n,
                                DATA_TYPE POLYBENCH_2D(data, N, M, n, m),
                                DATA_TYPE POLYBENCH_2D(corr, M, M, m, m),
                                DATA_TYPE POLYBENCH_1D(mean, M, m),
@@ -67,7 +67,7 @@ static void kernel_correlation(int m, int n,
 {
   int i, j, k;
 
-  DATA_TYPE eps = SCALAR_VAL(0.1);
+  const DATA_TYPE eps = SCALAR_VAL(0.1);
 
 #pragma scop
   for (j = 0; j < _PB_M; j++)
@@ -118,8 +118,8 @@ static void kernel_correlation(int m, int n,
 int main(int argc, char **argv)
 {
   /* Retrieve problem size. */
-  int n = N;
-  int m = M;
+  const int n = N;
+  const int m = M;
 
   /* Variable declaration/allocation. */
   DATA_TYPE float_n;
