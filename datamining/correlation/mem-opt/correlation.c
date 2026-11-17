@@ -99,15 +99,15 @@ static void kernel_correlation(const int m, const int n,
 
   for (j = 0; j < _PB_M; j++)
   {
-    stddev[j] = SCALAR_VAL(0.0);
+    DATA_TYPE std = SCALAR_VAL(0.0);
     for (i = 0; i < _PB_N; i++)
-      stddev[j] += (data[i][j] - mean[j]) * (data[i][j] - mean[j]);
-    stddev[j] /= float_n;
-    stddev[j] = SQRT_FUN(stddev[j]);
+      std += (data[i][j] - mean[j]) * (data[i][j] - mean[j]);
+    std /= float_n;
+    std = SQRT_FUN(std);
     /* The following in an inelegant but usual way to handle
        near-zero std. dev. values, which below would cause a zero-
        divide. */
-    stddev[j] = stddev[j] <= eps ? SCALAR_VAL(1.0) : stddev[j];
+    stddev[j] = std <= eps ? SCALAR_VAL(1.0) : std;
   }
 
   /* Center and reduce the column vectors. */
