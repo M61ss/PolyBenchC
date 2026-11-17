@@ -157,7 +157,7 @@ int main(int argc, char **argv)
 
   /* Prevent dead-code elimination. All live-out data must be printed
      by the function call in argument. */
-  polybench_prevent_dce(print_array(m, "corr.txt", POLYBENCH_ARRAY(corr)));
+  polybench_prevent_dce(print_array(m, "correct.txt", POLYBENCH_ARRAY(corr)));
 
   /* Be clean. */
   POLYBENCH_FREE_ARRAY(data);
