@@ -91,10 +91,10 @@ static void kernel_correlation(const int m, const int n,
 
   for (j = 0; j < _PB_M; j++)
   {
-    mean[j] = SCALAR_VAL(0.0);
+    DATA_TYPE sum = SCALAR_VAL(0.0);
     for (i = 0; i < _PB_N; i++)
-      mean[j] += data[i][j];
-    mean[j] /= float_n;
+      sum += (*data_transposed)[j][i];
+    mean[j] = sum / float_n;
   }
 
   for (j = 0; j < _PB_M; j++)
