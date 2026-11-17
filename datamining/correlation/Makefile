@@ -10,7 +10,7 @@ all:
 	$(CC) $(CFLAGS) $(EXT_CFLAGS) -I $(INCLUDES) $(SRC) -o $(FILENAME).o $(LDLIBS)
 
 clean:
-	rm $(FILENAME).o
+	rm -f $(FILENAME).o
 
 run:
 	./$(FILENAME).o
