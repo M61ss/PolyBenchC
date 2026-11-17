@@ -124,10 +124,10 @@ static void kernel_correlation(const int m, const int n,
     corr[i][i] = SCALAR_VAL(1.0);
     for (j = i + 1; j < _PB_M; j++)
     {
-      corr[i][j] = SCALAR_VAL(0.0);
+      double sum = SCALAR_VAL(0.0);
       for (k = 0; k < _PB_N; k++)
-        corr[i][j] += (data[k][i] * data[k][j]);
-      corr[j][i] = corr[i][j];
+        sum += (data[k][i] * data[k][j]);
+      corr[j][i] = corr[i][j] = sum;
     }
   }
 
