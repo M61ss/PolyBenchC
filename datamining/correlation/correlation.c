@@ -38,9 +38,17 @@ static void init_array(const int m,
 /* DCE code. Must scan the entire live-out data.
    Can be used also to check the correctness of the output. */
 static void print_array(const int m,
+                        char *filename,
                         DATA_TYPE POLYBENCH_2D(corr, M, M, m, m))
 
 {
+  FILE *output = fopen(filename, "w");
+  if (!output)
+  {
+    fprintf(stderr, "Unable to open output file %s.", filename);
+    exit(1);
+  }
+
   int i, j;
 
   POLYBENCH_DUMP_START;
@@ -49,11 +57,13 @@ static void print_array(const int m,
     for (j = 0; j < m; j++)
     {
       if ((i * m + j) % 20 == 0)
-        fprintf(POLYBENCH_DUMP_TARGET, "\n");
-      fprintf(POLYBENCH_DUMP_TARGET, DATA_PRINTF_MODIFIER, corr[i][j]);
+        fprintf(output, "\n");
+      fprintf(output, DATA_PRINTF_MODIFIER, corr[i][j]);
     }
   POLYBENCH_DUMP_END("corr");
   POLYBENCH_DUMP_FINISH;
+
+  fclose(output);
 }
 
 /* Main computational kernel. The whole function will be timed,
@@ -147,7 +157,7 @@ int main(int argc, char **argv)
 
   /* Prevent dead-code elimination. All live-out data must be printed
      by the function call in argument. */
-  polybench_prevent_dce(print_array(m, POLYBENCH_ARRAY(corr)));
+  polybench_prevent_dce(print_array(m, "corr.txt", POLYBENCH_ARRAY(corr)));
 
   /* Be clean. */
   POLYBENCH_FREE_ARRAY(data);
