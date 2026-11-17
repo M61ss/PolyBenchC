@@ -114,8 +114,8 @@ static void kernel_correlation(const int m, const int n,
   for (i = 0; i < _PB_N; i++)
     for (j = 0; j < _PB_M; j++)
     {
-      data[i][j] -= mean[j];
-      data[i][j] /= SQRT_FUN(float_n) * stddev[j];
+      (*data_transposed)[j][i] -= mean[j];
+      (*data_transposed)[j][i] /= SQRT_FUN(float_n) * stddev[j];
     }
 
   /* Calculate the m * m correlation matrix. */
@@ -126,7 +126,7 @@ static void kernel_correlation(const int m, const int n,
     {
       double sum = SCALAR_VAL(0.0);
       for (k = 0; k < _PB_N; k++)
-        sum += (data[k][i] * data[k][j]);
+        sum += ((*data_transposed)[i][k] * (*data_transposed)[j][k]);
       corr[j][i] = corr[i][j] = sum;
     }
   }
