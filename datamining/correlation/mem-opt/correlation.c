@@ -80,6 +80,17 @@ static void kernel_correlation(const int m, const int n,
   const DATA_TYPE eps = SCALAR_VAL(0.1);
 
 #pragma scop
+  POLYBENCH_2D_ARRAY_DECL(data_transposed, DATA_TYPE, M, N, m, n);
+
+  for (i = 0; i < _PB_M; i++)
+    for (j = 0; j < _PB_N; j++)
+    {
+      double ij = data[i][j];
+      double ji = data[j][i];
+      (*data_transposed)[i][j] = ji;
+      (*data_transposed)[j][i] = ij;
+    }
+
   for (j = 0; j < _PB_M; j++)
   {
     mean[j] = SCALAR_VAL(0.0);
@@ -121,7 +132,17 @@ static void kernel_correlation(const int m, const int n,
       corr[j][i] = corr[i][j];
     }
   }
+
   corr[_PB_M - 1][_PB_M - 1] = SCALAR_VAL(1.0);
+
+  for (i = 0; i < _PB_N; i++)
+    for (j = 0; j < _PB_M; j++)
+    {
+      double ij = (*data_transposed)[i][j];
+      double ji = (*data_transposed)[j][i];
+      data[i][j] = ji;
+      data[j][i] = ij;
+    }
 #pragma endscop
 }
 
