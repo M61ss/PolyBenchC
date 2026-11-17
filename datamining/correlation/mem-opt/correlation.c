@@ -135,15 +135,6 @@ static void kernel_correlation(const int m, const int n,
 
   corr[_PB_M - 1][_PB_M - 1] = SCALAR_VAL(1.0);
 
-  for (i = 0; i < _PB_N; i++)
-    for (j = 0; j < _PB_M; j++)
-    {
-      double ij = (*data_transposed)[i][j];
-      double ji = (*data_transposed)[j][i];
-      data[i][j] = ji;
-      data[j][i] = ij;
-    }
-
   POLYBENCH_FREE_ARRAY(data_transposed);
 #pragma endscop
 }
