@@ -143,6 +143,8 @@ static void kernel_correlation(const int m, const int n,
       data[i][j] = ji;
       data[j][i] = ij;
     }
+
+  POLYBENCH_FREE_ARRAY(data_transposed);
 #pragma endscop
 }
 
