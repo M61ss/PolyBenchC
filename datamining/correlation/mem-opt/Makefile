@@ -21,4 +21,4 @@ check:
 	diff --normal $(GNDTRUTH) $(OUTPUT)
 
 profile:
-	perf stat ./$(FILENAME).o
+	perf stat -r 10 ./$(FILENAME).o
