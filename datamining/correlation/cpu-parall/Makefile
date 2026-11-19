@@ -4,7 +4,7 @@ GNDTRUTH  	?= ../$(FILENAME).txt
 OUTPUT 		?= $(FILENAME).txt
 INCLUDES 	:= ../../../utilities
 SRC 		:= $(INCLUDES)/polybench.c $(FILENAME).c 
-CFLAGS    	:= -O3
+CFLAGS    	:= -O3 -fopenmp
 LDLIBS    	:= -lm
 EXT_CFLAGS 	?=
 

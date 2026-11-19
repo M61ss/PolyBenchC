@@ -79,77 +79,57 @@ static void kernel_correlation(const int m, const int n,
 
   const DATA_TYPE eps = SCALAR_VAL(0.1);
 
-  POLYBENCH_2D_ARRAY_DECL(data_transposed, DATA_TYPE, M, N, m, n);
-
 #pragma scop
 #pragma omp parallel
   {
-#pragma omp for collapse(2)
-    for (i = 0; i < _PB_N; i++)
-      for (j = 0; j < _PB_M; j++)
-      {
-        double ij = data[i][j];
-        (*data_transposed)[j][i] = ij;
-      }
-
 #pragma omp for
     for (j = 0; j < _PB_M; j++)
     {
-      DATA_TYPE sum = SCALAR_VAL(0.0);
+      mean[j] = SCALAR_VAL(0.0);
       for (i = 0; i < _PB_N; i++)
-        sum += (*data_transposed)[j][i];
-      mean[j] = sum / float_n;
+        mean[j] += data[i][j];
+      mean[j] /= float_n;
     }
 
 #pragma omp for
     for (j = 0; j < _PB_M; j++)
     {
-      DATA_TYPE std = SCALAR_VAL(0.0);
+      stddev[j] = SCALAR_VAL(0.0);
       for (i = 0; i < _PB_N; i++)
-        std += (data[i][j] - mean[j]) * (data[i][j] - mean[j]);
-      std /= float_n;
-      std = SQRT_FUN(std);
+        stddev[j] += (data[i][j] - mean[j]) * (data[i][j] - mean[j]);
+      stddev[j] /= float_n;
+      stddev[j] = SQRT_FUN(stddev[j]);
       /* The following in an inelegant but usual way to handle
          near-zero std. dev. values, which below would cause a zero-
          divide. */
-      stddev[j] = std <= eps ? SCALAR_VAL(1.0) : std;
+      stddev[j] = stddev[j] <= eps ? SCALAR_VAL(1.0) : stddev[j];
     }
 
-    /* Center and reduce the column vectors. */
+/* Center and reduce the column vectors. */
 #pragma omp for collapse(2)
     for (i = 0; i < _PB_N; i++)
       for (j = 0; j < _PB_M; j++)
       {
-        (*data_transposed)[j][i] -= mean[j];
-        (*data_transposed)[j][i] /= SQRT_FUN(float_n) * stddev[j];
+        data[i][j] -= mean[j];
+        data[i][j] /= SQRT_FUN(float_n) * stddev[j];
       }
 
-    /* Calculate the m * m correlation matrix. */
+/* Calculate the m * m correlation matrix. */
 #pragma omp for schedule(dynamic, 32)
     for (i = 0; i < _PB_M - 1; i++)
     {
       corr[i][i] = SCALAR_VAL(1.0);
       for (j = i + 1; j < _PB_M; j++)
       {
-        double sum = SCALAR_VAL(0.0);
+        corr[i][j] = SCALAR_VAL(0.0);
         for (k = 0; k < _PB_N; k++)
-          sum += ((*data_transposed)[i][k] * (*data_transposed)[j][k]);
-        corr[j][i] = corr[i][j] = sum;
+          corr[i][j] += (data[k][i] * data[k][j]);
+        corr[j][i] = corr[i][j];
       }
     }
-
     corr[_PB_M - 1][_PB_M - 1] = SCALAR_VAL(1.0);
-
-#pragma omp for collapse(2)
-    for (i = 0; i < _PB_M; i++)
-      for (j = 0; j < _PB_N; j++)
-      {
-        double ij = (*data_transposed)[i][j];
-        data[j][i] = ij;
-      }
   }
 #pragma endscop
-  POLYBENCH_FREE_ARRAY(data_transposed);
 }
 
 int main(int argc, char **argv)
