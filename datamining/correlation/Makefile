@@ -8,13 +8,13 @@ LDLIBS    	:= -lm
 EXT_CFLAGS 	?=
 
 all:
-	$(CC) $(CFLAGS) $(EXT_CFLAGS) -I $(INCLUDES) $(SRC) -o $(FILENAME).o $(LDLIBS)
+	$(CC) $(CFLAGS) $(EXT_CFLAGS) -I $(INCLUDES) $(SRC) -o $(FILENAME).exe $(LDLIBS)
 
 clean:
-	rm -f $(FILENAME).o $(OUTPUT)
+	rm -f $(FILENAME).exe $(OUTPUT)
 
 run:
-	./$(FILENAME).o
+	./$(FILENAME).exe
 
 profile:
-	perf stat -r 10 ./$(FILENAME).o
+	perf stat -r 10 ./$(FILENAME).exe
